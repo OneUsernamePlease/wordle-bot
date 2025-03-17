@@ -1,3 +1,9 @@
-let a: string = "hello world my name is vite";
 
-console.log(a);
+document.addEventListener("DOMContentLoaded", initialize);
+function initialize() {
+    registerEvents();
+}
+function registerEvents() {
+
+}
+
