@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/node": "^22.13.10",
     "typescript": "^5.8.2",
     "vite": "^6.2.2"
   },
@@ -7,5 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"
+  },
+  "dependencies": {
+    "an-array-of-english-words": "^2.0.0"
   }
 }
