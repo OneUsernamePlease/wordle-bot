@@ -9,6 +9,7 @@ export class WordleGame {
     private _gameWon: boolean = false;
     private _guessCount: number = 0;
     private _guesses: GuessResult[] = [];
+    
     public set wordLength(length: number) {
         length = ensureNumberInRange(length, this.gameParameters.minWordLength, this.gameParameters.maxWordLength);
         this._wordLength = length;
@@ -17,7 +18,7 @@ export class WordleGame {
     public get wordLength() {
         return this._wordLength;
     }
-    public constructor(allWords: string[], length = 6) {
+    public constructor(allWords: string[], length = 5) {
         this._allWords = allWords;
         this.wordLength = length;
     }
@@ -29,63 +30,46 @@ export class WordleGame {
             throw new Error(`Wrong Length. Chosen word ${this._theWord}, defined length: ${this.wordLength}. Make sure to always use setter "this.wordLength" instead of "this._wordLength".`);
         }
 
+        this._guesses = [];
         this._guessCount = 0;
         this._gameWon = false;
     }
-    public analyzeGuess(guess: string) {
+    private analyzeLetters(guess: string): GuessResult {
+        let guessArray = Array.from(guess);
+        let solutionArray = Array.from(this._theWord);
         let guessResult: LetterResult[] = [];
-        let guessTransformed: (string | undefined)[] = guess.split("");
-        let targetWordTransformed: (string | undefined)[] = this._theWord.split("");
+        
         // check for correct positions
-        for (let i = 0; i < guessTransformed.length; i++) {
-            if (guessTransformed[i] === targetWordTransformed[i]) {
+        for (let i = 0; i < guessArray.length; i++) {
+            if (guessArray[i] === solutionArray[i]) {
+                guessArray[i] = "";
+                solutionArray[i] = "";
                 guessResult[i] = LetterResult.CorrectPosition;
-                guessTransformed[i] = undefined;
-                targetWordTransformed.splice(i, 1);
             }
         }
 
-        // check for incorrect positions
-        for (let i = 0; i < guessTransformed.length; i++) {
-            const curGuessLetter = guessTransformed[i];
-            if (curGuessLetter === undefined) {
+        // check for incorrect position and no occurrence
+        for (let i = 0; i < guessArray.length; i++) {
+            if (guessArray[i].length === 0) {
                 continue;
             }
-            
-            const indexOfLetter = targetWordTransformed.indexOf(curGuessLetter)
-            if (indexOfLetter < 0) {
-                guessTransformed[i] = undefined;
-                continue;    
+            const letterIndexInSolution = solutionArray.indexOf(guessArray[i])
+            if (letterIndexInSolution >= 0) {
+                solutionArray[letterIndexInSolution] = "";
+                guessResult[i] = LetterResult.WrongPosition;
+            } else {
+                guessResult[i] = LetterResult.DoesNotOccur;
             }
-            guessResult[i] = LetterResult.WrongPosition;
-            targetWordTransformed.splice(i, 1);
         }
 
-        this._guesses[this._guessCount - 1] = { guessResult: guessResult };
-    }
-    public submitGuess(guess: string): GuessFeedback {
-        const validWord = this._possibleWords.includes(guess);
-        if (!validWord) {
-            return GuessFeedback.InvalidWord;
-        }
-        
-        this._guessCount++;
-        if (guess === this._theWord) {
-            return GuessFeedback.GameWon;
-        }
-        if (this._guessCount >= this.gameParameters.maxNumberOfGuesses) {
-            return GuessFeedback.GameOver;
-        }
-
-        this.analyzeGuess(guess);
-        return GuessFeedback.Continuing;
+        return { guessResult: guessResult };
     }
     private getRandomWord(): string {
         const index = rng(0, this._possibleWords.length - 1);
         return this._possibleWords[index];
     }
-    public getWordsWithLength(length: number): string[] {
+    private getWordsWithLength(length: number): string[] {
         return this._allWords.filter(element => element.length === length);
-    }
+    } 
 }
 
