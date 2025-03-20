@@ -10,21 +10,57 @@
 <body>
   <h1>Wordle Bot</h1>
   <div class="mainContainer">
-    <div class="grid">
-      <div class="gridRow">
-        <div class="cell"><input type="text" maxlength="1"></div>
-        <div class="cell"><input type="text" maxlength="1"></div>
-        <div class="cell"><input type="text" maxlength="1"></div>
+    <div class="wordleGameContainer">
+      <div class="wordleControlsTop">
+        <div id="wordleLengthSelectContainer">
+          <label for="wordleLengthSelect">Length:</label>
+          <select id="wordleLengthSelect">
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select> 
+        </div>
+        <div>
+          <button id="btnNewGame">New Game</button>
+        </div>
       </div>
-      <div class="gridRow">
-        <div class="cell"><input type="text" maxlength="1"></div>
-        <div class="cell"><input type="text" maxlength="1"></div>
-        <div class="cell"><input type="text" maxlength="1"></div>
+      <div id="wordleGrid" class="grid">
+        <div class="gridRow">
+          <div class="cell"><input type="text" maxlength="1"></div>
+          <div class="cell"><input type="text" maxlength="1"></div>
+          <div class="cell"><input type="text" maxlength="1"></div>
+        </div>
+        <div class="gridRow">
+          <div class="cell"><input type="text" maxlength="1"></div>
+          <div class="cell"><input type="text" maxlength="1"></div>
+          <div class="cell"><input type="text" maxlength="1"></div>
+        </div>
+        <div class="gridRow">
+          <div class="cell"><input type="text" maxlength="1"></div>
+          <div class="cell"><input type="text" maxlength="1"></div>
+          <div class="cell"><input type="text" maxlength="1"></div>
+        </div>
       </div>
-      <div class="gridRow">
-        <div class="cell"><input type="text" maxlength="1"></div>
-        <div class="cell"><input type="text" maxlength="1"></div>
-        <div class="cell"><input type="text" maxlength="1"></div>
+      <div class="wordleControlsBottom">
+        <div>
+          <button>Guess</button>
+          <button>Give Up</button>
+        </div>
+        <div>
+          <button id="test">Test</button>
+        </div>
+        <div>
+          <p id="wordleFeedback"></p>
+        </div>
+      </div>
+    </div>
+    <div class="wordleAnalyzerContainer">
+      <div>
       </div>
     </div>
   </div>

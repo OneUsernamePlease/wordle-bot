@@ -11,6 +11,7 @@ body {
 
 .mainContainer {
     display: flex;
+    flex-direction: row;
     flex-grow: 1;
     justify-content: center;
     align-items: center;
@@ -18,10 +19,18 @@ body {
     margin: 0;
 }
 
+.wordleGameContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .grid {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-bottom: 20px;
 }
 
 .gridRow {
@@ -56,4 +65,19 @@ body {
 .cell:focus-within {
     border-color: #4a90e2;
     background-color: #e1f3fc;
+}
+
+.wordleControlsTop {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    margin: 10px;
+}
+
+.wordleControlsBottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
