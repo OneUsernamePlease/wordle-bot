@@ -4,10 +4,10 @@ export enum GameStatus {
     GameWon = 1
 }
 export enum GuessFeedback {
-    InvalidWord = -1,
-    GameOver = 0,
-    GameWon = 1,
-    Continuing = 2
+    IncorrectLength = -2,
+    GuessNotInWordList = -1,
+    WrongGuess = 0,
+    CorrectGuess = 1
 }
 export enum LetterResult {
     CorrectPosition = 1,
@@ -15,7 +15,9 @@ export enum LetterResult {
     DoesNotOccur = 3
 }
 export interface GuessResult {
-    guessResult: (LetterResult | undefined)[];
+    guessFeedback: GuessFeedback,
+    letterResults: null | LetterResult[],
+    gameStatus: GameStatus
 }
 export interface GameParameters {
     maxNumberOfGuesses: number;
