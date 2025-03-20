@@ -1,4 +1,6 @@
 import { ensureNumberInRange, rng } from "../utils";
+import { GameParameters, GameStatus, GuessResult, LetterResult } from "./types";
+
 
 export class WordleGame {
     private gameParameters: GameParameters = { maxNumberOfGuesses: 6, maxWordLength: 10, minWordLength: 3 };
@@ -6,7 +8,7 @@ export class WordleGame {
     private _allWords: string[];
     private _possibleWords!: string[];
     private _theWord: string = "";
-    private _gameWon: boolean = false;
+    private _gameStatus: GameStatus = GameStatus.GameOngoing;
     private _guessCount: number = 0;
     private _guesses: GuessResult[] = [];
     
@@ -17,6 +19,12 @@ export class WordleGame {
     }
     public get wordLength() {
         return this._wordLength;
+    }
+    public get guessCount() {
+        return this._guessCount;
+    }
+    public get gameStatus() {
+        return this._gameStatus;
     }
     public constructor(allWords: string[], length = 5) {
         this._allWords = allWords;
@@ -32,7 +40,7 @@ export class WordleGame {
 
         this._guesses = [];
         this._guessCount = 0;
-        this._gameWon = false;
+        this._gameStatus = GameStatus.GameOngoing;
     }
     private analyzeLetters(guess: string): GuessResult {
         let guessArray = Array.from(guess);
@@ -70,6 +78,6 @@ export class WordleGame {
     }
     private getWordsWithLength(length: number): string[] {
         return this._allWords.filter(element => element.length === length);
-    } 
+    }
 }
 
