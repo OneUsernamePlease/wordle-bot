@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", initialize);
 function initialize() {
     initializeVariables();
     registerEvents();
+    newGame();
 }
 function initializeVariables() {
     wordleGrid = document.getElementById(constants.WORDLE_GRID_ID)!;
@@ -31,6 +32,7 @@ function newGame() {
         document.getElementById("wordleFeedback")!.innerHTML = "Give Up before starting a new game";
         return;
     }
+    prepareGrid(wordleGame.wordLength, wordleGame.gameParameters.maxNumberOfGuesses);
     wordleGame.newGame();
 }
 function removeGrid() {
@@ -39,7 +41,24 @@ function removeGrid() {
     }
 }
 function prepareGrid(length: number, guesses: number) {
+    removeGrid();
     
+    for (let row = 0; row < guesses; row++) {
+        const row = document.createElement("div");
+        row.classList.add("gridRow");
+
+        for (let letter = 0; letter < length; letter++) {
+            const box = document.createElement("div");
+            const input = document.createElement("input");
+            box.classList.add("cell");
+            input.setAttribute("type", "text");
+            input.setAttribute("maxLength", "1");
+            box.appendChild(input);
+            row.appendChild(box);
+        }
+
+        wordleGrid.appendChild(row);
+    }
 }
 function getSelectedLength(selectElement: HTMLSelectElement): number {
     const selection: string = selectElement.value;
