@@ -4,14 +4,13 @@ export enum GameStatus {
     GameWon = 1
 }
 export enum GuessFeedback {
-    IncorrectLength = -2,
     GuessNotInWordList = -1,
     WrongGuess = 0,
     CorrectGuess = 1
 }
 export enum LetterResult {
     CorrectPosition = 1,
-    WrongPosition = 2,
+    IncorrectPosition = 2,
     DoesNotOccur = 3
 }
 export interface GuessResult {

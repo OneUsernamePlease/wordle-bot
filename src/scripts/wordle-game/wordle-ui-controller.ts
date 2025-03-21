@@ -1,3 +1,5 @@
+import { GuessResult, LetterResult } from "./types";
+
 export class WordleUiController {
     private _wordleGrid: HTMLElement;
     get wordleGrid() {
@@ -6,7 +8,45 @@ export class WordleUiController {
     constructor(wordleGridId: string) {
         this._wordleGrid = document.getElementById(wordleGridId)!;
     }
+    public getWordFromGrid(row: number): string {
+        const gridChildren = this._wordleGrid.children;
+        const numberOfRows = gridChildren.length;
+        if (row >= numberOfRows) {
+            throw new Error(`Error. Trying to retrieve word from row[${row + 1}], grid only has ${numberOfRows} rows.`);
+        }
+        const targetRow = gridChildren[row];
+        const inputs = targetRow.querySelectorAll("input");
+        const word = Array.from(inputs).map(input => input.value).join("");
 
+        return word;
+    }
+    public colorRow(row: number, guessResult: GuessResult) {
+        const letterResult = guessResult.letterResults;
+        if (!letterResult) {
+            return;
+        }
+        const rowElement = this._wordleGrid.children[row];
+        const letterBoxElements = rowElement.querySelectorAll(".cell");
+        for (let i = 0; i < letterResult.length; i++) {
+            switch (letterResult[i]) {
+                case LetterResult.CorrectPosition:
+                    letterBoxElements[i].classList.add("correctPosition");
+                    break;
+            
+                case LetterResult.IncorrectPosition:
+                    letterBoxElements[i].classList.add("incorrectPosition");
+                    break;
+            
+                case LetterResult.DoesNotOccur:
+                    letterBoxElements[i].classList.add("doesNotOccur");
+                    break;
+            
+                default:
+                    break;
+            }
+            
+        }
+    }
     public prepareGrid(length: number, guesses: number) {
         this.removeGrid();
         

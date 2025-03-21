@@ -1,7 +1,6 @@
 import { ensureNumberInRange, rng } from "../utils";
 import { GameParameters, GameStatus, GuessFeedback, GuessResult, LetterResult } from "./types";
 
-
 export class WordleGame {
     private _gameParameters: GameParameters = { maxNumberOfGuesses: 6, maxWordLength: 10, minWordLength: 3 };
     private _wordLength!: number;
@@ -10,7 +9,7 @@ export class WordleGame {
     private _solution: string = "";
     private _gameStatus: GameStatus = GameStatus.GameOngoing;
     private _guessCount: number = 0;
-    private _guesses: [][] = [];
+    private _guesses: string[] = [];
     
     public set wordLength(length: number) {
         length = ensureNumberInRange(length, this._gameParameters.minWordLength, this._gameParameters.maxWordLength);
@@ -28,6 +27,9 @@ export class WordleGame {
     }
     public get gameParameters() {
         return this._gameParameters;
+    }
+    public get solution() {
+        return this._solution;
     }
     public constructor(allWords: string[], length = 5) {
         this._allWords = allWords;
@@ -67,7 +69,7 @@ export class WordleGame {
             const letterIndexInSolution = solutionArray.indexOf(guessArray[i])
             if (letterIndexInSolution >= 0) {
                 solutionArray[letterIndexInSolution] = "";
-                guessResult[i] = LetterResult.WrongPosition;
+                guessResult[i] = LetterResult.IncorrectPosition;
             } else {
                 guessResult[i] = LetterResult.DoesNotOccur;
             }
@@ -77,10 +79,7 @@ export class WordleGame {
     }
     public submitGuess(guess: string): GuessResult {
         guess = guess.toLowerCase();
-        
-        if (guess.length !== this.wordLength) {
-            return { guessFeedback: GuessFeedback.IncorrectLength, letterResults: null, gameStatus: GameStatus.GameOngoing };
-        }
+
         if (!this._possibleWords.includes(guess)) {
             return { guessFeedback: GuessFeedback.GuessNotInWordList, letterResults: null, gameStatus: GameStatus.GameOngoing };
         }
@@ -92,7 +91,9 @@ export class WordleGame {
         let guessFeedback: GuessFeedback;
         let gameStatus: GameStatus = GameStatus.GameOngoing;
         
+        this._guesses[this._guessCount] = guess;
         this._guessCount++;
+        
         if (guess === this._solution) {
             guessFeedback = GuessFeedback.CorrectGuess;
             gameStatus = GameStatus.GameWon;
