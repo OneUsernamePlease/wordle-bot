@@ -5,6 +5,9 @@ export class WordleUiController {
     get wordleGrid() {
         return this._wordleGrid;
     }
+    get rows() {
+        return this._wordleGrid.querySelectorAll(".gridRow");
+    }
     constructor(wordleGridId: string) {
         this._wordleGrid = document.getElementById(wordleGridId)!;
     }
@@ -47,6 +50,20 @@ export class WordleUiController {
             
         }
     }
+    public enableRowInputs(rowIndex: number) {
+        const rowElement = this.rows[rowIndex];
+        const inputs = rowElement.querySelectorAll("input");
+        inputs.forEach(input => {
+            input.disabled = false;
+        });
+    }
+    public disableRowInputs(rowIndex: number) {
+        const rowElement = this.rows[rowIndex];
+        const inputs = rowElement.querySelectorAll("input");
+        inputs.forEach(input => {
+            input.disabled = true;
+        });
+    }
     public prepareGrid(length: number, guesses: number) {
         this.removeGrid();
         
@@ -60,12 +77,15 @@ export class WordleUiController {
                 box.classList.add("cell");
                 input.setAttribute("type", "text");
                 input.setAttribute("maxLength", "1");
+                input.disabled = true;
                 box.appendChild(input);
                 row.appendChild(box);
             }
     
             this.wordleGrid.appendChild(row);
         }
+
+        this.enableRowInputs(0);
     }
     private removeGrid() {
         while (this.wordleGrid.firstChild) {

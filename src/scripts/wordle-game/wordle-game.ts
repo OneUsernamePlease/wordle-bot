@@ -2,7 +2,7 @@ import { ensureNumberInRange, rng } from "../utils";
 import { GameParameters, GameStatus, GuessFeedback, GuessResult, LetterResult } from "./types";
 
 export class WordleGame {
-    private _gameParameters: GameParameters = { maxNumberOfGuesses: 6, maxWordLength: 10, minWordLength: 3 };
+    private _gameParameters: GameParameters = { maxNumberOfGuesses: 3, maxWordLength: 10, minWordLength: 3 };
     private _wordLength!: number;
     private _allWords: string[];
     private _possibleWords!: string[];
@@ -10,6 +10,7 @@ export class WordleGame {
     private _gameStatus: GameStatus = GameStatus.GameOngoing;
     private _guessCount: number = 0;
     private _guesses: string[] = [];
+    private static readonly allowedCharacters: string[] = Array.from('abcdefghijklmnopqrstuvwxyzöäü');
     
     public set wordLength(length: number) {
         length = ensureNumberInRange(length, this._gameParameters.minWordLength, this._gameParameters.maxWordLength);
@@ -47,6 +48,34 @@ export class WordleGame {
         this._guessCount = 0;
         this._gameStatus = GameStatus.GameOngoing;
     }
+    public submitGuess(guess: string): GuessResult {
+        guess = guess.toLowerCase();
+
+        if (!this._possibleWords.includes(guess)) {
+            return { guessFeedback: GuessFeedback.GuessNotInWordList, letterResults: null, gameStatus: GameStatus.GameOngoing };
+        }
+
+        return this.processGuess(guess);
+    }
+    private processGuess(guess: string): GuessResult {
+        const letterResults = this.analyzeLetters(guess);
+        let guessFeedback: GuessFeedback;
+        let gameStatus: GameStatus = GameStatus.GameOngoing;
+        
+        this._guesses[this._guessCount] = guess;
+        this._guessCount++;
+        
+        if (guess === this._solution) {
+            guessFeedback = GuessFeedback.CorrectGuess;
+            gameStatus = GameStatus.GameWon;
+        } else {
+            guessFeedback = GuessFeedback.WrongGuess;
+            if (this.guessCount >= this._gameParameters.maxNumberOfGuesses) {
+                gameStatus = GameStatus.GameOver;
+            }
+        }
+        return { guessFeedback: guessFeedback, letterResults: letterResults, gameStatus: gameStatus };
+    }
     private analyzeLetters(guess: string): LetterResult[] {
         let guessArray = Array.from(guess);
         let solutionArray = Array.from(this._solution);
@@ -77,40 +106,19 @@ export class WordleGame {
 
         return guessResult;
     }
-    public submitGuess(guess: string): GuessResult {
-        guess = guess.toLowerCase();
-
-        if (!this._possibleWords.includes(guess)) {
-            return { guessFeedback: GuessFeedback.GuessNotInWordList, letterResults: null, gameStatus: GameStatus.GameOngoing };
-        }
-
-        return this.processGuess(guess);
-    }
-    private processGuess(guess: string): GuessResult {
-        const letterResults = this.analyzeLetters(guess);
-        let guessFeedback: GuessFeedback;
-        let gameStatus: GameStatus = GameStatus.GameOngoing;
-        
-        this._guesses[this._guessCount] = guess;
-        this._guessCount++;
-        
-        if (guess === this._solution) {
-            guessFeedback = GuessFeedback.CorrectGuess;
-            gameStatus = GameStatus.GameWon;
-        } else {
-            guessFeedback = GuessFeedback.WrongGuess;
-            if (this.guessCount >= this._gameParameters.maxNumberOfGuesses) {
-                gameStatus = GameStatus.GameOver;
-            }
-        }
-        return { guessFeedback: guessFeedback, letterResults: letterResults, gameStatus: gameStatus };
-    }
     private getRandomWord(): string {
         const index = rng(0, this._possibleWords.length - 1);
         return this._possibleWords[index];
     }
     private getWordsWithLength(length: number): string[] {
         return this._allWords.filter(element => element.length === length);
+    }
+    public static symbolAllowed(s: string) {
+        return this.allowedCharacters.includes(s);
+    }
+    public static isRelevantActionKey(key: string) {
+        const actionKeys = ["enter","delete","backspace","arrowleft","arrowright"];
+        return actionKeys.includes(key.toLowerCase());
     }
 }
 

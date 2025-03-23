@@ -62,6 +62,10 @@ body {
     background-color: transparent;
 }
 
+.cell input:disabled {
+    color: black;
+}
+
 .cell:focus-within {
     border-color: #4a90e2;
     background-color: #e1f3fc;
